@@ -3,7 +3,6 @@ package me.michalkunc.qbackend.mysql;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Table(name = "qbac_users")

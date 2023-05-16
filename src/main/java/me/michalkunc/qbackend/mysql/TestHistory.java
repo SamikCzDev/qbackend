@@ -1,7 +1,6 @@
 package me.michalkunc.qbackend.mysql;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
@@ -18,5 +17,7 @@ public class TestHistory {
     private int recivesAns;
 
     private int corrCount;
+
+    private String allowIds;
 
 }
