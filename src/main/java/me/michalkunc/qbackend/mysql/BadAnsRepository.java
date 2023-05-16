@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface BadAnsRepository extends JpaRepository<BadAns,Integer> {
     List<BadAns> findTop3ByUserId(int userId);
+
+    BadAns findEntityByQuestionAndUser(Question question, User user);
 }

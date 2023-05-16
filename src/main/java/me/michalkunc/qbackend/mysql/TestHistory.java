@@ -16,8 +16,6 @@ public class TestHistory {
 
     private int recivesAns;
 
-    private int corrCount;
-
     private String allowIds;
 
 }

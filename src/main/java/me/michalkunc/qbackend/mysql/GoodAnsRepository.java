@@ -7,5 +7,7 @@ import java.util.List;
 public interface GoodAnsRepository extends JpaRepository<GoodAns,Integer> {
     GoodAns findById(int id);
 
+    GoodAns findEntityByQuestionAndUser(Question question, User user);
+
     List<GoodAns> findTop3ByUserIdOrderByReturnTimeAsc(int userID);
 }

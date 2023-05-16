@@ -3,7 +3,6 @@ package me.michalkunc.qbackend.managers;
 import lombok.Data;
 import me.michalkunc.qbackend.mysql.*;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 
 import java.time.LocalDate;
@@ -28,7 +27,6 @@ public class TestManager {
         testHistory = new TestHistory();
 
         testHistory.setUser(user);
-        testHistory.setCorrCount(0);
         testHistory.setRecivesAns(0);
 
 
@@ -63,12 +61,8 @@ public class TestManager {
         }
 
         JSONArray ja = new JSONArray();
-        int count = 1;
         for (Question q : toSend) {
-            JSONObject ids = new JSONObject();
-            ids.put(String.valueOf(count),q.getId());
-            count++;
-            ja.put(ids);
+            ja.put(String.valueOf(q.getId()));
         }
         testHistory.setAllowIds(ja.toString());
         testHistoryRepository.save(testHistory);
