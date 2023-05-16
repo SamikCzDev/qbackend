@@ -30,7 +30,7 @@ public class TestDTO {
             answers.add(question.getAns3());
             answers.add(question.getAnsCorr());
             Collections.shuffle(answers);
-            questionList.add(new QuestionCon(question.getId(), question.getQuestion(),answers));
+            questionList.add(new QuestionCon(question.getId(),question.getQuestion(),question.getLevel(),answers));
         }
     }
 }

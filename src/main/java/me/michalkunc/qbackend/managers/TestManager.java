@@ -23,7 +23,8 @@ public class TestManager {
 
     private TestHistory testHistory;
 
-    public TestManager(User user, BadAnsRepository badAnsRepository, GoodAnsRepository goodAnsRepository, TestHistoryRepository testHistoryRepository, List<Question> questions) {
+    public TestManager(User user, BadAnsRepository badAnsRepository, GoodAnsRepository goodAnsRepository, TestHistoryRepository testHistoryRepository, List<Question> questions, boolean ignore) {
+
         testHistory = new TestHistory();
 
         testHistory.setUser(user);
@@ -36,36 +37,70 @@ public class TestManager {
         this.questions = questions;
         Collections.shuffle(this.questions);
 
-        for (BadAns badAns : bad) {
-            toSend.add(badAns.getQuestion());
-        }
-        for (GoodAns goodAns : expire) {
-            if (ChronoUnit.DAYS.between(goodAns.getReturnTime(), LocalDate.now()) > 7) {
-                toSend.add(goodAns.getQuestion());
+        if(ignore) {
+            int targetSize = 10;
+            int missingEntities = targetSize - toSend.size();
+
+            for (Question entity : questions) {
+                if (!toSend.contains(entity)) {
+                    toSend.add(entity);
+                    missingEntities--;
+                }
+
+                if (missingEntities == 0) {
+                    break;
+                }
+            }
+        } else {
+            for (BadAns badAns : bad) {
+                toSend.add(badAns.getQuestion());
+            }
+            for (GoodAns goodAns : expire) {
+                if(!(toSend.contains(goodAns.getQuestion()))) {
+                    System.out.println(ChronoUnit.DAYS.between(goodAns.getTime(), LocalDate.now()));
+                    if (ChronoUnit.DAYS.between(goodAns.getTime(), LocalDate.now()) > 30) {
+                        toSend.add(goodAns.getQuestion());
+                    }
+                }
+
+            }
+
+
+            int targetSize = 10;
+            int missingEntities = targetSize - toSend.size();
+
+            for (Question entity : questions) {
+                if (!toSend.contains(entity)) {
+                    toSend.add(entity);
+                    missingEntities--;
+                }
+
+                if (missingEntities == 0) {
+                    break;
+                }
+            }
+            Collections.shuffle(toSend);
+
+            JSONArray ja = new JSONArray();
+            for (Question q : toSend) {
+                ja.put(String.valueOf(q.getId()));
+            }
+            testHistory.setAllowIds(ja.toString());
+            testHistoryRepository.save(testHistory);
+
+
+            int count = 0;
+            for (GoodAns goodAns : goodAnsRepository.findAllByUserAndQuestionLevel(user,user.getLevel())) {
+                if (!(ChronoUnit.DAYS.between(goodAns.getTime(), LocalDate.now()) > 30)) {
+                    count++;
+                }
+            }
+            if(count >= 15 && user.getLevel() == 1) {
+                user.setLevel(2);
+            } else if(count >= 15 && user.getLevel() == 2) {
+
             }
         }
-
-
-        int targetSize = 10;
-        int missingEntities = targetSize - toSend.size();
-
-        for (Question entity : questions) {
-            if (!toSend.contains(entity)) {
-                toSend.add(entity);
-                missingEntities--;
-            }
-
-            if (missingEntities == 0) {
-                break;
-            }
-        }
-
-        JSONArray ja = new JSONArray();
-        for (Question q : toSend) {
-            ja.put(String.valueOf(q.getId()));
-        }
-        testHistory.setAllowIds(ja.toString());
-        testHistoryRepository.save(testHistory);
 
     }
 }

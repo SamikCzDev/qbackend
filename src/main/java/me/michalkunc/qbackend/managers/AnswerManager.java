@@ -26,24 +26,37 @@ public class AnswerManager {
         this.testHistoryRepository = testHistoryRepository;
     }
 
-    public boolean checkAns(AnswerCon answerCon, User user) {
+    public int checkAns(AnswerCon answerCon, User user) {
         TestHistory testHistory = testHistoryRepository.findById(answerCon.getTestID());
         if(testHistory == null || testHistory.getRecivesAns() >= 10 || testHistory.getUser().getId() != user.getId()) {
-            return false;
+            return 0;
         }
         JSONArray ids = new JSONArray(testHistory.getAllowIds());
         if(!JsonUtils.jsonContains(String.valueOf(answerCon.getQuestionsID()),ids)) {
-            return false;
+            return 0;
         }
         Question question = questionRepository.findById(answerCon.getQuestionsID());
         if(question == null) {
-            return false;
+            return 0;
         }
-
+        int resp = 0;
 
         testHistory.setAllowIds(JsonUtils.removeFromJSON(String.valueOf(question.getId()),ids).toString());
 
         testHistory.setRecivesAns(testHistory.getRecivesAns()+1);
+
+        if(answerCon.isTraining()) {
+            if(question.getAnsCorr().equals(answerCon.getAnswer())) {
+                testHistoryRepository.save(testHistory);
+
+                return 1;
+            } else {
+                testHistoryRepository.save(testHistory);
+
+                return 2;
+            }
+        }
+
 
         if(question.getAnsCorr().equals(answerCon.getAnswer())) {
             GoodAns goodAns = goodAnsRepository.findEntityByQuestionAndUser(question,user);
@@ -61,7 +74,7 @@ public class AnswerManager {
                 goodAns.setReturnTime(DateUtils.plusDayToToday(7));
                 goodAnsRepository.save(goodAns);
             }
-
+            resp = 1;
         } else {
             BadAns badAns = badAnsRepository.findEntityByQuestionAndUser(question,user);
             if(badAns == null) {
@@ -76,9 +89,9 @@ public class AnswerManager {
                 badAns.setTestHistory(testHistory);
                 badAnsRepository.save(badAns);
             }
-
+            resp = 2;
         }
         testHistoryRepository.save(testHistory);
-        return true;
+        return resp;
     }
 }

@@ -11,5 +11,6 @@ public class QuestionCon {
 
     private int id;
     private String question;
+    private int level;
     private List<String> answers;
 }

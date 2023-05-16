@@ -7,4 +7,5 @@ public class AnswerCon {
     private int questionsID;
     private int testID;
     private String answer;
+    private boolean training;
 }
