@@ -66,7 +66,6 @@ public class HttpController {
 
     @PostMapping(path = "/login")
     public ResponseDTO login(@RequestBody User userProvide, HttpServletResponse response) {
-        System.out.println(userProvide.toString());
         User user = userRepository.findByUserName(userProvide.getUserName());
         if(user == null || !user.getPass().equals(Sha256.getSha256(userProvide.getPass()))) {
             response.setStatus(404);

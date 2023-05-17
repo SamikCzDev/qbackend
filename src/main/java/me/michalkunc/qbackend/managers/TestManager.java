@@ -63,7 +63,6 @@ public class TestManager {
             }
             for (GoodAns goodAns : expire) {
                 if(!(toSend.contains(goodAns.getQuestion()))) {
-                    System.out.println(ChronoUnit.DAYS.between(goodAns.getTime(), LocalDate.now()));
                     if (ChronoUnit.DAYS.between(goodAns.getTime(), LocalDate.now()) > 30) {
                         toSend.add(goodAns.getQuestion());
                     }
