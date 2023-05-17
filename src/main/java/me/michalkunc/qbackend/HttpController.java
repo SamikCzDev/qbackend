@@ -111,12 +111,26 @@ public class HttpController {
         if (user.getLevel() == 1) {
             return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl1Q,false));
 
-        } else {
+        } else if(user.getLevel() == 2) {
             return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl2Q,false));
+        }else if(user.getLevel() == 3) {
+            return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl3Q,false));
+        }else if(user.getLevel() == 4) {
+            return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl4Q,false));
+        }else if(user.getLevel() == 5) {
+            return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl5Q,false));
+        }else if(user.getLevel() == 6) {
+            return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl6Q,false));
+        }else if(user.getLevel() == 7) {
+            return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl7Q,false));
+        } else {
+            return new TestDTO(200,new TestManager(user,badAnsRepository,goodAnsRepository,testHistoryRepository,lvl1Q,false));
+
         }
     }
     @PostMapping(path = "/sendAnswer")
     public ResponseDTO sendAnswer(@RequestBody AnswerCon answerCon, HttpServletResponse response, HttpServletRequest request) {
+        System.out.println(answerCon);
         if(request.getCookies() == null) {
             response.setStatus(401);
             return new ResponseDTO(401,"Not login!");
@@ -150,7 +164,6 @@ public class HttpController {
 
    @PostMapping(path = "/genForLevel")
     public TestDTO genForLevel(@RequestBody LevelDTO levelDTO, HttpServletResponse response, HttpServletRequest request) {
-        System.out.println(levelDTO);
        if (request.getCookies() == null) {
            response.setStatus(401);
            return new TestDTO(401);

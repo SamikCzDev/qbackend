@@ -51,6 +51,12 @@ public class TestManager {
                     break;
                 }
             }
+            JSONArray ja = new JSONArray();
+            for (Question q : toSend) {
+                ja.put(String.valueOf(q.getId()));
+            }
+            testHistory.setAllowIds(ja.toString());
+            testHistoryRepository.save(testHistory);
         } else {
             for (BadAns badAns : bad) {
                 toSend.add(badAns.getQuestion());
